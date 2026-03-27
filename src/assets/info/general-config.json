@@ -2,18 +2,18 @@
   "initialSlug": "001",
   "planetPath": "/planet.webm",
   "animate": true,
-  "defaultTitle": "MSMC |",
-  "icon": "/faction-logos/msmc.svg",
+  "defaultTitle": "LIBRAXXI |",
+  "icon": "/faction-logos/union.svg",
   "header": {
-    "planet": "Heiligtum-6 'Deep Blue'",
+    "planet": "LIBRA-2",
     "year": "5017u",
-    "system": "Heiligtum",
-    "gate": "Rào Cỏ",
-    "ring": "Annamite",
-    "headerTitle": "Mirrorsmoke",
-    "headerSubtitle": "Mercenary Company",
-    "subheaderTitle": "Contract Work",
-    "subheaderSubtitle": "Sierra-Whiskey-Alpha-Golf"
+    "system": "LIBRA-XXI",
+    "gate": "LIBRA-XXI Gate",
+    "ring": "Auriga",
+    "headerTitle": "COUNTERWEIGHT",
+    "headerSubtitle": "PROTOCOL",
+    "subheaderTitle": "Current Status",
+    "subheaderSubtitle": "Operational"
   },
   "pilotSpecialInfo": {}
 }
