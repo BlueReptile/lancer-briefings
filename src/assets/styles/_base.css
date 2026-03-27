@@ -14,7 +14,7 @@
 	--highlight-hover: rgba(255, 255, 255, 0.3);
 	--highlight-active: rgba(255, 255, 255, 0.1);
 	/* Primary Text */
-	--text-headers: rgba(188, 188, 188, 1);
+	--text-headers: rgba(0, 0, 0, 1);
 	--text-location: rgba(255, 255, 255, 0.87);
 	/* Location Information */
 	--location-separator: rgba(255, 255, 255, 0.24);
@@ -23,10 +23,10 @@
 	--text-mission-status: rgba(255, 255, 255, 0.87);
 	--mission-start: rgba(109, 109, 109, 1);
 	--mission-partial: rgba(88, 34, 102, 1);
-	--mission-success: #226662;
+	--mission-success: #0fd17d;
 	--mission-failure: rgba(176, 45, 45, 1);
-	--primary-logo: #0C3C40;
-	--secondary-logo: #146464;
+	--primary-logo: #b8b8b8;
+	--secondary-logo: #d9dbde;
 	/* Pilot Roster Text */
 	--text-pilot-header: rgba(255, 255, 255, 0.67);
 	--text-pilot-value: rgba(255, 255, 255, 0.87);
@@ -105,6 +105,7 @@ header {
 	font-weight: 800;
 	text-transform: uppercase;
 	letter-spacing: 0.15em;
+	color: rgba(255, 255, 255, 0.96);
 }
 
 .title #title-subheader {
@@ -116,6 +117,7 @@ header {
 	text-transform: uppercase;
 	letter-spacing: 0.12em;
 	padding-left: 0.32em;
+	color: rgba(255, 255, 255, 0.92);
 }
 
 .title #subtitle-header {
@@ -126,6 +128,7 @@ header {
 	font-weight: 600;
 	text-transform: uppercase;
 	letter-spacing: 0.08em;
+	color: rgba(255, 255, 255, 0.88);
 }
 
 .title #subtitle-subheader {
@@ -136,12 +139,14 @@ header {
 	font-weight: 700;
 	text-transform: uppercase;
 	letter-spacing: 0.02em;
+	color: rgba(255, 255, 255, 0.84);
 }
 
 .logo {
 	width: 50px;
 	height: 80px;
 	margin-left: 15px;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 
 .title-row {
@@ -298,7 +303,11 @@ div.location-info {
 	align-items: center;
 	margin-bottom: 1em;
 	text-decoration: none;
-	color: var(--text-headers);
+	color: rgba(255, 255, 255, 0.80);
+}
+
+.sidebar-layout a:not(.router-link-exact-active) img {
+	filter: brightness(0) invert(1) opacity(0.80);
 }
 
 .sidebar-layout a.router-link-exact-active {
@@ -314,6 +323,11 @@ div.location-info {
 	background: white;
 	margin-bottom: 1em;
 	text-decoration: none;
+	color: rgba(0, 0, 0, 0.80);
+}
+
+.sidebar-layout a.router-link-exact-active img {
+	filter: brightness(0) opacity(0.75);
 }
 
 .clipped-bottom-right {
@@ -397,6 +411,7 @@ section .section-header {
 	display: inline-flex;
 	gap: 15px;
 	padding-left: 16px;
+	color: rgba(255, 255, 255, 0.92);
 }
 
 
@@ -405,6 +420,7 @@ section .section-header img {
 	width: 36px;
 	height: 36px;
 	align-self: center;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 
 section .section-header h1 {

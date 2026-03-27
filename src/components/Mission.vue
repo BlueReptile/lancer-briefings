@@ -1,5 +1,5 @@
 <template>
-  <div class="mission" :class="[{ active: isActive }, mission.status]">
+  <div class="mission" :class="[{ active: isActive }, mission.status]" @click="selectMission">
     <div class="name">
       <h1>Mission // {{ mission.slug }}</h1>
       <h2>{{ mission.name }}</h2>
@@ -14,14 +14,20 @@
 <script>
 export default {
   components: {},
+  emits: ["select"],
   props: {
     mission: {
       type: Object,
       required: true,
     },
     selected: {
-      type: String,
+      type: [String, Number],
       required: true,
+    },
+  },
+  methods: {
+    selectMission() {
+      this.$emit("select", this.mission.slug);
     },
   },
   computed: {
@@ -35,7 +41,7 @@ export default {
       if (this.mission.status === "failure") return "Mission\nFailure";
     },
     isActive() {
-      return this.mission.slug === this.selected;
+      return String(this.mission.slug) === String(this.selected);
     },
   },
 };

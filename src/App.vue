@@ -70,13 +70,15 @@ export default {
 			headEl.appendChild(faviconEl);
 		},
 		async importMissions(files) {
-			let filePromises = Object.keys(files).map(path => files[path]());
+			const paths = Object.keys(files);
+			let filePromises = paths.map(path => files[path]());
 			let fileContents = await Promise.all(filePromises);
-			fileContents.forEach(content => {
+			fileContents.forEach((content, index) => {
+				const slug = paths[index].split('/').pop().replace('.md', '');
 				let mission = {};
-				mission["slug"] = content.split("\n")[0];
-				mission["name"] = content.split("\n")[1];
-				mission["status"] = content.split("\n")[2];
+				mission["slug"] = slug;
+				mission["name"] = content.split("\n")[1].trim();
+				mission["status"] = content.split("\n")[2].trim();
 				mission["content"] = content.split("\n").splice(3).join("\n");
 				this.missions = [...this.missions, mission];
 			});

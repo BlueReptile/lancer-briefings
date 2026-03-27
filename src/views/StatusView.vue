@@ -9,7 +9,7 @@
 			<div class="section-content-container">
 				<div class="mission-list-container">
 					<Mission v-for="item in missions" :key="item.slug" :mission="item" :selected="missionSlug"
-						@click="selectMission(item.slug)" />
+						@select="selectMission" />
 				</div>
 			</div>
 		</section>
@@ -19,7 +19,7 @@
 				<h1>Current Assignment</h1>
 			</div>
 			<div class="section-content-container">
-				<vue-markdown-it :source="missionMarkdown" class="markdown" />
+				<vue-markdown-it :key="missionSlug" :source="missionMarkdown" class="markdown" />
 			</div>
 		</section>
 		<div>
@@ -109,21 +109,41 @@ export default {
 		this.setAnimate();
 		this.setClockAnimateDelay();
 	},
-	beforeUpdate() {
-		// initial set
-		this.selectMission(this.missionSlug);
-	},
 	mounted() {
-		// need to set on re-mount
-		if (this.missions.length > 0) {
-			this.selectMission(this.missions[0].slug);
-		}
+		this.selectInitialMission();
+	},
+	watch: {
+		missions() {
+			this.selectInitialMission();
+		},
+		initialSlug() {
+			this.selectInitialMission();
+		},
 	},
 	methods: {
 		selectMission(slug) {
-			this.missionSlug = slug;
-			let m = this.missions.find(x => x.slug === this.missionSlug);
-			this.missionMarkdown = m.content;
+			const selectedMission = this.missions.find(x => x.slug === slug);
+			if (!selectedMission) {
+				return;
+			}
+
+			this.missionSlug = selectedMission.slug;
+			this.missionMarkdown = selectedMission.content || "";
+		},
+		selectInitialMission() {
+			if (this.missions.length === 0) {
+				this.missionSlug = "";
+				this.missionMarkdown = "";
+				return;
+			}
+
+			if (this.missions.some(x => x.slug === this.missionSlug)) {
+				this.selectMission(this.missionSlug);
+				return;
+			}
+
+			const initialMission = this.missions.find(x => x.slug === this.initialSlug) || this.missions[0];
+			this.selectMission(initialMission.slug);
 		},
 		setAnimate() {
 			if (this.animate) {
