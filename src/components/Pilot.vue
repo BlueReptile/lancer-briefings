@@ -86,7 +86,8 @@
           <div class="mech-record flex-container-cols" @click="mechModal">
             <div style="width:100%">
               MECHANICAL BLUEPRINT VALID [[{{ randomNumber(14, 22) }}TB]] <br />
-              {{ activeMech.manufacturer.toUpperCase() }}-{{ activeMech.frame_name.toUpperCase() }} :: "{{ activeMech.name.toUpperCase() }}"
+              {{ activeMech.manufacturer.toUpperCase() }}-{{ activeMech.frame_name.toUpperCase() }} :: "{{
+                activeMech.name.toUpperCase() }}"
             </div>
             <div>
               <i aria-hidden="true"
@@ -197,7 +198,7 @@ export default {
       return [...lancerData.talents, ...ktbData.talents, ...nrfawData.talents, ...longrimData.talents]
     },
     skills() {
-      return [...lancerData.skills]    
+      return [...lancerData.skills]
     },
     bonds() {
       return [...ktbData.bonds]
@@ -219,13 +220,13 @@ export default {
         identName += `${part}.`
       })
       identName += identFirstName;
-			return `Union Administrative RM-4 Pilot Identification Protocol (IDENT) Record ${identName}: ${this.pilot.id} // ${this.pilot.background} // LOADOUT ${this.pilot.loadout.id} - MECH ${this.pilot.mechs[0].id} // HARDPOINTS ${this.pilot.mechs[0].loadouts[0].id}`;
-		},
+      return `Union Administrative RM-4 Pilot Identification Protocol (IDENT) Record ${identName}: ${this.pilot.id} // ${this.pilot.background} // LOADOUT ${this.pilot.loadout.id} - MECH ${this.pilot.mechs[0].id} // HARDPOINTS ${this.pilot.mechs[0].loadouts[0].id}`;
+    },
     pilotInfo() {
       const info = this.pilot
 
       let resolveGear = (type, item, idx, arr) => {
-        item = item || {id: "", flavorName: ""};
+        item = item || { id: "", flavorName: "" };
         const gear = this.pilotGear.find((obj) => { return item.id === obj.id }) || null;
         item.flavorName = gear?.name || "ERR: DATA NOT FOUND";
         arr[idx] = item;
@@ -233,7 +234,7 @@ export default {
 
       info.loadout.armor.forEach((item, index, array) => resolveGear('armor', item, index, array));
       info.loadout.weapons.forEach((item, index, array) => resolveGear('weapon', item, index, array));
-      info.loadout.gear.forEach((item, index, array) =>resolveGear('gear', item, index, array));
+      info.loadout.gear.forEach((item, index, array) => resolveGear('gear', item, index, array));
 
       return info;
     },
@@ -299,12 +300,15 @@ export default {
     },
     getTalent(id, value) {
       let talent = this.talents.find((x) => x.id == id);
-      let response = talent.name + " "
+      if (talent != null) {
+        let response = talent.name + " "
 
-      for (let i = 0; i < value; i++) {
-        response += "I"
+        for (let i = 0; i < value; i++) {
+          response += "I"
+        }
+        return response;
       }
-      return response;
+      return "ERR: DATA NOT FOUND"
     },
     getLicense(id, value) {
       let frame = this.frames.find((x) => x.id == id);
