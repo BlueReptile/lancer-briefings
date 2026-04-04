@@ -14,7 +14,7 @@
 	--highlight-hover: rgba(255, 255, 255, 0.3);
 	--highlight-active: rgba(255, 255, 255, 0.1);
 	/* Primary Text */
-	--text-headers: rgba(0, 0, 0, 1);
+	--text-headers: rgba(255, 255, 255, 1);
 	--text-location: rgba(255, 255, 255, 0.87);
 	/* Location Information */
 	--location-separator: rgba(255, 255, 255, 0.24);
@@ -936,6 +936,14 @@ section .section-header h1 {
 	gap: 15px;
 	padding-left: 16px;
 	margin-top: -38px !important;
+	color: var(--text-headers);
+}
+
+.grid-item div .section-header img {
+	width: 36px;
+	height: 36px;
+	align-self: center;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 
 .grid-item div .section-header h1 {
@@ -1007,6 +1015,14 @@ section .section-header h1 {
 	gap: 15px;
 	padding-left: 16px;
 	margin-top: -38px !important;
+	color: var(--text-headers);
+}
+
+.pilot-modal div .section-header img {
+	width: 36px;
+	height: 36px;
+	align-self: center;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 .pilot-modal div .section-header h1 {
 	font-size: 26px;
@@ -1078,6 +1094,14 @@ section .section-header h1 {
 	gap: 15px;
 	padding-left: 16px;
 	margin-top: -38px !important;
+	color: var(--text-headers);
+}
+
+.mech-modal div .section-header img {
+	width: 36px;
+	height: 36px;
+	align-self: center;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 
 .mech-modal div .section-header h1 {
@@ -1208,6 +1232,14 @@ section .section-header h1 {
 	gap: 15px;
 	padding-left: 16px;
 	margin-top: -38px !important;
+	color: var(--text-headers);
+}
+
+.event-modal div .section-header img {
+	width: 36px;
+	height: 36px;
+	align-self: center;
+	filter: brightness(0) invert(1) opacity(0.96);
 }
 
 .event-modal div .section-header h1 {

@@ -5,7 +5,7 @@
         <div class="heading h1">{{ pilot.callsign }}</div>
         <div class="heading h2">({{ pilot.name }}) </div>
       </div>
-      <div class="col"><img src="/faction-logos/msmc.svg"></div>
+      <div class="col"><img class="logo" src="/faction-logos/msmc.svg"></div>
     </div>
     <div class="body">
       <div class="add-padding"> Union Administrative RM-4 Pilot Identification Protocol (IDENT) Record
@@ -73,7 +73,7 @@
         <div class="row biometrics-container">
           <div class="biometrics flex-container-cols" @click="pilotModal">
             <div>
-              <i aria-hidden="true" class="v-icon notranslate mdi mdi-fingerprint theme--dark grey--text text--darken-2"
+              <i aria-hidden="true" class="v-icon notranslate mdi mdi-fingerprint theme--dark accent--text"
                 style="font-size: 36px; margin-top:36px;"></i>
             </div>
             <div style="width:100%">
@@ -91,7 +91,7 @@
             </div>
             <div>
               <i aria-hidden="true"
-                class="v-icon notranslate cci cci-reserve-mech theme--dark grey--text text--darken-2 larger"
+                class="v-icon notranslate cci cci-reserve-mech theme--dark accent--text larger"
                 style="font-size: 42px; margin-top:1em;"></i>
             </div>
           </div>
