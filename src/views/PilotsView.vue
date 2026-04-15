@@ -63,7 +63,7 @@ export default {
 }
 
 .pilot-list-container {
-	height:calc(100vh - 96px);
+        height:calc(125vh - 96px);
 }
 
 .section-content-container {
