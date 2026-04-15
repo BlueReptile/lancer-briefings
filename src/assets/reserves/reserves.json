@@ -1,2 +1,29 @@
 [
+	{
+		"type": "Data",
+		"name": "Stolen Cargo Data",
+		"description": "Data on stolen cargo, including the type of cargo, its value, and any relevant details about the theft.",
+		"label": "Stolen Cargo Data",
+		"cost": "None",
+		"notes": "This data can be used to track stolen cargo and identify patterns in thefts, which can help in preventing future incidents.",
+		"callsign": ""
+	},
+    {
+        "type": "Data",
+        "name": "Printer Data",
+        "description": "Corrupted data of the mecha printer in the pirate base, might contain information about the mechas that were printed or repaired and their specifications.",
+        "label": "Printer Data",
+        "cost": "None",
+        "notes": "This data can provide insights into the types of mechas being produced or repaired in the pirate base, which can be useful for understanding their capabilities and weaknesses.",
+        "callsign": ""
+    },
+    {
+        "type": "Data",
+        "name": "Corrupted data and photos of a experimental Mecha",
+        "description": "Corrupted data and photos of an experimental Mecha, might include information about its design, capabilities, and potential weaknesses.",
+        "label": "Experimental Mecha Data",
+        "cost": "None",
+        "notes": "This data can be valuable for understanding the experimental Mecha's strengths and weaknesses, which can be crucial for planning strategies to counter it.",
+        "callsign": ""
+    }
 ]

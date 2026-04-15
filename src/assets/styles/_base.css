@@ -42,7 +42,15 @@
 }
 
 html {
-	overflow: overlay;
+	overflow-x: hidden;
+	overflow-y: overlay;
+}
+
+#app {
+	transform-origin: top left;
+	transform: scale(0.8);
+	width: 125%;
+	min-height: 125vh;
 }
 
 /* Scroll bar stylings */
@@ -261,7 +269,7 @@ div.location-info {
 .page-wrapper {
 	display: flex;
 	flex-direction: column;
-	height: 100vh;
+	height: 125vh;
 }
 
 .sidebar-page {
