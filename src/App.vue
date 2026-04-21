@@ -1,12 +1,17 @@
 <template>
-	<div class="page-wrapper">
-		<Header :planet-path="planetPath" :class="{ animate: animate }" :header="header" />
-		<Sidebar :animate="animate" :class="{ animate: animate }" />
-	</div>
-	<div id="router-view-container">
+	<template v-if="!isHome">
+		<div class="page-wrapper">
+			<Header :planet-path="planetPath" :class="{ animate: animate }" :header="header" />
+		</div>
+		<div id="router-view-container">
+			<router-view :animate="animate" :initial-slug="initialSlug" :missions="missions" :events="events"
+				:pilots="pilots" :clocks="clocks" :reserves="reserves" />
+		</div>
+	</template>
+	<template v-else>
 		<router-view :animate="animate" :initial-slug="initialSlug" :missions="missions" :events="events"
 			:pilots="pilots" :clocks="clocks" :reserves="reserves" />
-	</div>
+	</template>
 	<svg style="visibility: hidden; position: absolute" width="0" height="0" xmlns="http://www.w3.org/2000/svg"
 		version="1.1">
 		<defs>
@@ -25,13 +30,11 @@
 
 <script>
 import Header from "./components/layout/Header.vue";
-import Sidebar from "./components/layout/Sidebar.vue";
 import Config from "@/assets/info/general-config.json";
 
 export default {
 	components: {
 		Header,
-		Sidebar,
 	},
 
 	data() {
@@ -58,7 +61,11 @@ export default {
 		this.importPilots(import.meta.glob("@/assets/pilots/*.json"));
 	},
 	mounted() {
-		this.$router.push("/status");
+	},
+	computed: {
+		isHome() {
+			return this.$route && this.$route.path === "/home";
+		},
 	},
 	methods: {
 		setTitleFavicon(title, favicon) {

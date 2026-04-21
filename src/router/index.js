@@ -1,5 +1,6 @@
 import { createMemoryHistory, createWebHistory, createRouter } from "vue-router";
 
+import Home from "@/views/HomeView.vue";
 import Status from "@/views/StatusView.vue";
 import Pilots from "@/views/PilotsView.vue";
 import Events from "@/views/EventsView.vue";
@@ -9,7 +10,14 @@ const DEFAULT_TITLE = Config.defaultTitle;
 const routes = [
 	{
 		path: "/",
-		redirect: "/status",
+		redirect: "/home",
+	},
+	{
+		path: "/home",
+		name: "Home",
+		component: Home,
+		props: true,
+		meta: { title: `${DEFAULT_TITLE} MISSION BRIEFING` },
 	},
 	{
 		path: "/status",

@@ -9,6 +9,13 @@
 			  :expand-on-hover="expandOnHover"
 			  :reduce="reduce"
 			  open>
+				<router-link class="clipped-bottom-right sidebar-home-btn" to="/home" title="Main Menu">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="28" height="28">
+						<path d="M10 20v-6h4v6h5v-8h3L12 3 2 12h3v8z"/>
+					</svg>
+					<span>Menu</span>
+				</router-link>
+				<div class="sidebar-divider"></div>
 				<router-link class="clipped-bottom-right" to="/status">
 					<img src="/icons/orbital.svg" />
 					<span>Status</span>

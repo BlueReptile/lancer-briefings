@@ -1,5 +1,5 @@
 {
-  "initialSlug": "001",
+  "initialSlug": "004",
   "planetPath": "/planet.webm",
   "animate": true,
   "defaultTitle": "LIBRAXXI |",
@@ -15,5 +15,7 @@
     "subheaderTitle": "Current Status",
     "subheaderSubtitle": "Operational"
   },
-  "pilotSpecialInfo": {}
+  "pilotSpecialInfo": {
+    
+  }
 }
