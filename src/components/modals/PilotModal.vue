@@ -27,6 +27,7 @@
 
 <script>
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it';
+import { mechImageSrc, pilotImageSrc } from '@/services/imageSources';
 
 export default {
 	components: {
@@ -46,25 +47,25 @@ export default {
 	},
 	computed: {
     pilotPortrait() {
-      return `/pilots/${this.pilot.callsign.toUpperCase()}.webp`
+      return pilotImageSrc(this.pilot)
     },
     mechPortrait() {
-      return `/mechs/${this.pilot.callsign}.webp`
+      return mechImageSrc(this.pilot.mechs?.[0], this.pilot)
     },
 	},
 	methods: {
 		getHistory(){
-			if (this.pilot.history === ""){
+			if (!this.pilot.history && !this.pilot.text_appearance){
 				return `<p> <h2> [ERR: REDACTED] </h2> </p>`
 			}
 
 			let response = "<p>"
 			
-			if (this.pilot.text_appearance !== ""){
+			if (this.pilot.text_appearance){
 				response += `<h2>APPEARANCE</h2> ${this.pilot.text_appearance} </hr>`;
 			}
 
-			if (this.pilot.history !== ""){
+			if (this.pilot.history){
 				response += `<h2>HISTORY</h2> ${this.pilot.history} </hr>`;
 			}
 

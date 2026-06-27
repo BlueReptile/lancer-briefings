@@ -18,6 +18,8 @@
 </template>
 
 <script>
+import { pilotImageSrc } from "@/services/imageSources";
+
 export default {
 	name: "Reserve",
 	components: {},
@@ -41,8 +43,10 @@ export default {
 			});
 
 			if (pilot) {
-				return pilot.cloud_portrait;
+				return pilotImageSrc(pilot);
 			}
+
+			return "/icons/pilot.svg";
 		},
 	},
 	methods: {},

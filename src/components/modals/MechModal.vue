@@ -65,6 +65,7 @@
 
 <script>
 import { VueMarkdownIt } from '@f3ve/vue-markdown-it';
+import { mechImageSrc, pilotImageSrc } from '@/services/imageSources';
 
 export default {
   components: {
@@ -116,22 +117,25 @@ export default {
   },
   computed: {
     pilotPortrait() {
-      return `/pilots/${this.pilot.callsign.toUpperCase()}.webp`
+      return pilotImageSrc(this.pilot)
     },
     mechPortrait() {
-      return `/mechs/${this.pilot.callsign.toUpperCase()}.webp`
+      return mechImageSrc(this.mech, this.pilot)
     },
   },
   methods: {
     getActiveLoadout() {
       const activeLoadoutIdx = this.mech.active_loadout_index
-      this.activeLoadout = this.mech.loadouts[activeLoadoutIdx]
+      this.activeLoadout = this.mech.loadouts?.[activeLoadoutIdx] || this.mech.loadouts?.[0] || {
+        systems: [],
+        mounts: [],
+      }
     },
     getMechMounts() {
       let resolveMountSlots = (type, item, idx, arr) => {
         item = item || {id: "", flavorName: ""}
         const mountObj = this.weaponsData.find((obj) => { return item.id === obj.id }) || null
-        item.flavorName = mountObj?.name || "";
+        item.flavorName = mountObj?.name || item.data?.name || item.flavorName || "";
 
         switch (type) {
           case 'Main':
@@ -155,7 +159,7 @@ export default {
             break;
         }
       }
-      this.activeLoadout.mounts.forEach((mount) => {
+      ;(this.activeLoadout.mounts || []).forEach((mount) => {
         const mountSlots = mount.slots
         const mountSlotsIsArray = Array.isArray(mountSlots) && mountSlots.length > 0
         if (mountSlotsIsArray) {
@@ -173,11 +177,11 @@ export default {
       let resolveMechSystems = (item, idx, arr) => {
         item = item || {id: "", flavorName: ""}
         const mountObj = this.systemsData.find((obj) => { return item.id === obj.id }) || null
-        item.flavorName = mountObj?.name || "ERR: DATA NOT FOUND";
+        item.flavorName = mountObj?.name || item.data?.name || item.flavorName || "ERR: DATA NOT FOUND";
 
         this.mechSystems = [...this.mechSystems, item]
       }
-      this.activeLoadout.systems.forEach(resolveMechSystems);
+      ;(this.activeLoadout.systems || []).forEach(resolveMechSystems);
     },
     getFrameDescription(){
       return `<p> ${this.mech.frame_description} </p>`

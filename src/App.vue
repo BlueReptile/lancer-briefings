@@ -31,6 +31,8 @@
 <script>
 import Header from "./components/layout/Header.vue";
 import Config from "@/assets/info/general-config.json";
+import PilotSources from "@/assets/pilot-codes.json";
+import { hasPilotSources, loadPilotsFromSources, normalizePilotData } from "@/services/pilotImport";
 
 export default {
 	components: {
@@ -58,7 +60,7 @@ export default {
 		this.importEvents(import.meta.glob("@/assets/events/*.md", { query: '?raw', import: 'default' }));
 		this.importClocks(import.meta.glob("@/assets/clocks/*.json"));
 		this.importReserves(import.meta.glob("@/assets/reserves/*.json"));
-		this.importPilots(import.meta.glob("@/assets/pilots/*.json"));
+		this.importPilots(PilotSources, import.meta.glob("@/assets/pilots/*.json"));
 	},
 	mounted() {
 	},
@@ -121,14 +123,33 @@ export default {
 				this.reserves = JSON.parse(JSON.stringify(content)).default;
 			});
 		},
-		async importPilots(files) {
-			let filePromises = Object.keys(files).map(path => files[path]());
-			let fileContents = await Promise.all(filePromises);
+		cleanReferenceMark(value) {
+			return typeof value === "string"
+				? value.replace(/\u203b|\u00e2\u20ac\u00bb|\u00c3\u00a2\u00e2\u201a\u00ac\u00c2\u00bb/g, "")
+				: value;
+		},
+		async importPilots(sourceConfig, legacyFiles) {
+			let fileContents = [];
+
+			if (hasPilotSources(sourceConfig)) {
+				try {
+					fileContents = await loadPilotsFromSources(sourceConfig);
+				} catch (error) {
+					console.error("[Pilots] Failed to import pilots from COMP/CON codes", error);
+				}
+			} else {
+				let filePromises = Object.keys(legacyFiles).map(path => legacyFiles[path]());
+				fileContents = await Promise.all(filePromises);
+			}
+
 			fileContents.forEach(content => {
-				let pilotFromJson = JSON.parse(JSON.stringify(content));
+				let pilotFromJson = normalizePilotData(content);
+				if (!pilotFromJson) {
+					return;
+				}
 				// In case the pilot was added from a copy on compcon via sharecode, remove the "reference mark" symbol
-				pilotFromJson.name = pilotFromJson.name.replace("※", "");
-				pilotFromJson.callsign = pilotFromJson.callsign.replace("※", "");
+				pilotFromJson.name = this.cleanReferenceMark(pilotFromJson.name);
+				pilotFromJson.callsign = this.cleanReferenceMark(pilotFromJson.callsign);
 				let pilotFromVue = this.pilotSpecialInfo[pilotFromJson.callsign.toUpperCase()];
 				let pilot = {
 					...pilotFromJson,

@@ -82,12 +82,32 @@
             </div>
           </div>
         </div>
-        <div class="row biometrics-container">
-          <div class="mech-record flex-container-cols" @click="mechModal">
+        <div class="row biometrics-container mech-list-container">
+          <div v-if="pilotMechs.length > 0" class="mech-list">
+            <div
+              v-for="mech in pilotMechs"
+              :key="mech.id || mech.name"
+              class="mech-record flex-container-cols"
+              :class="{ 'active-mech-record': mech.id === activeMech.id }"
+              @click="mechModal(mech)"
+            >
+              <div style="width:100%">
+                <span v-if="mech.id === activeMech.id">ACTIVE FRAME // </span>
+                MECHANICAL BLUEPRINT VALID [[{{ randomNumber(14, 22) }}TB]] <br />
+                {{ mech.manufacturer.toUpperCase() }}-{{ mech.frame_name.toUpperCase() }} :: "{{
+                  mech.name.toUpperCase() }}"
+              </div>
+              <div>
+                <i aria-hidden="true"
+                  class="v-icon notranslate cci cci-reserve-mech theme--dark accent--text larger"
+                  style="font-size: 42px; margin-top:0.2em;"></i>
+              </div>
+            </div>
+          </div>
+          <div v-else class="mech-record flex-container-cols">
             <div style="width:100%">
-              MECHANICAL BLUEPRINT VALID [[{{ randomNumber(14, 22) }}TB]] <br />
-              {{ activeMech.manufacturer.toUpperCase() }}-{{ activeMech.frame_name.toUpperCase() }} :: "{{
-                activeMech.name.toUpperCase() }}"
+              MECHANICAL BLUEPRINT MISSING <br />
+              ERR: NO MECHS REGISTERED
             </div>
             <div>
               <i aria-hidden="true"
@@ -126,10 +146,30 @@
 .mech-record {
   margin-left: auto;
   text-align: right;
+  padding: 4px 6px;
 }
 
 .modal-buttons {
   margin-top: 5px;
+}
+
+.mech-list-container {
+  align-items: stretch;
+}
+
+.mech-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  width: 100%;
+  max-height: 175px;
+  overflow-y: auto;
+  padding-right: 2px;
+}
+
+.active-mech-record {
+  outline: 1px solid var(--primary-color);
+  background-color: rgba(145, 0, 24, 0.16);
 }
 </style>
 
@@ -155,6 +195,7 @@ import Typer from '@/components/Typer.vue'
 
 import ProgressBar from '@/components/ProgressBar.vue'
 import Burden from '@/components/Burden.vue'
+import { mechImageSrc, pilotImageSrc } from '@/services/imageSources'
 
 export default {
   components: {
@@ -180,10 +221,10 @@ export default {
   },
   computed: {
     pilotPortrait() {
-      return `/pilots/${this.pilot.callsign.toUpperCase()}.webp`
+      return pilotImageSrc(this.pilot)
     },
     mechPortrait() {
-      return `/mechs/${this.pilot.callsign.toUpperCase()}.webp`
+      return mechImageSrc(this.activeMech, this.pilot)
     },
     pilotGear() {
       return [...lancerData.pilot_gear]
@@ -206,6 +247,10 @@ export default {
     frames() {
       return [...lancerData.frames, ...ktbData.frames, ...nrfawData.frames, ...longrimData.frames]
     },
+    pilotMechs() {
+      const mechs = Array.isArray(this.pilot.mechs) ? this.pilot.mechs : []
+      return mechs.map((mech) => this.buildMechDisplay(mech))
+    },
     mechManufacturerIcon() {
       if (this.activeMech.manufacturer)
         return `/faction-logos/${this.activeMech.manufacturer.toLowerCase()}.svg`
@@ -220,7 +265,10 @@ export default {
         identName += `${part}.`
       })
       identName += identFirstName;
-      return `Union Administrative RM-4 Pilot Identification Protocol (IDENT) Record ${identName}: ${this.pilot.id} // ${this.pilot.background} // LOADOUT ${this.pilot.loadout.id} - MECH ${this.pilot.mechs[0].id} // HARDPOINTS ${this.pilot.mechs[0].loadouts[0].id}`;
+      const activeLoadout = this.pilot.loadout || {};
+      const firstMech = this.pilot.mechs?.[0] || {};
+      const firstMechLoadout = firstMech.loadouts?.[0] || {};
+      return `Union Administrative RM-4 Pilot Identification Protocol (IDENT) Record ${identName}: ${this.pilot.id} // ${this.pilot.background} // LOADOUT ${activeLoadout.id || 'UNKNOWN'} - MECH ${firstMech.id || 'UNKNOWN'} // HARDPOINTS ${firstMechLoadout.id || 'UNKNOWN'}`;
     },
     pilotInfo() {
       const info = this.pilot
@@ -232,9 +280,10 @@ export default {
         arr[idx] = item;
       }
 
-      info.loadout.armor.forEach((item, index, array) => resolveGear('armor', item, index, array));
-      info.loadout.weapons.forEach((item, index, array) => resolveGear('weapon', item, index, array));
-      info.loadout.gear.forEach((item, index, array) => resolveGear('gear', item, index, array));
+      const loadout = info.loadout || {};
+      (loadout.armor || []).forEach((item, index, array) => resolveGear('armor', item, index, array));
+      (loadout.weapons || []).forEach((item, index, array) => resolveGear('weapon', item, index, array));
+      (loadout.gear || []).forEach((item, index, array) => resolveGear('gear', item, index, array));
 
       return info;
     },
@@ -249,9 +298,28 @@ export default {
         return obj.id === this.pilot.bondId
       })
     },
+    getMissingFrame() {
+      return lancerData.frames.find((obj) => { return obj.id === 'missing_frame' }) || lancerData.frames[0] || {}
+    },
+    getFrameForMech(mech) {
+      return this.frames.find((obj) => {
+        return obj.id === mech?.frame
+      }) || mech?.frameData || this.getMissingFrame()
+    },
+    buildMechDisplay(mech) {
+      const frame = this.getFrameForMech(mech)
+      return {
+        ...mech,
+        frame_description: mech?.frame_description || frame.description || '',
+        frame_name: mech?.frame_name || frame.name || mech?.frame || 'UNKNOWN',
+        manufacturer: mech?.manufacturer || frame.source || 'GMS',
+        mechtype: mech?.mechtype || (Array.isArray(frame.mechtype) ? frame.mechtype.join(' // ') : ''),
+      }
+    },
     getActiveMech() {
-      const activeMechID = this.pilot.state.active_mech_id
-      const mech = this.pilot.mechs.find((obj) => {
+      const activeMechID = this.pilot.state?.active_mech_id
+      const mechs = this.pilotMechs
+      const mech = mechs.find((obj) => {
         return obj.id === activeMechID
       })
 
@@ -260,33 +328,28 @@ export default {
       }
       else {
         // default to missing frame in case pilot has no mechs
-        this.pilot.mechs[0] ? this.activeMech = this.pilot.mechs[0] : lancerData.frames.find((obj) => { return obj.id === 'missing_frame' })
+        this.activeMech = mechs.find((obj) => obj.mounted) || mechs[0] || this.buildMechDisplay({
+          id: '',
+          name: 'ERR: NO MECH FOUND',
+          frame: 'missing_frame',
+          frameData: null,
+          loadouts: [],
+          active_loadout_index: 0,
+        })
       }
-
-      let frame = this.frames.find((obj) => {
-        return obj.id === this.activeMech.frame
-      })
-
-      if (!frame)
-        frame = lancerData.frames[0]
-
-      this.activeMech.frame_description = frame.description
-      this.activeMech.frame_name = frame.name
-      this.activeMech.manufacturer = frame.source
-      this.activeMech.mechtype = frame.mechtype.join(' // ')
     },
     getHistory() {
-      if (this.pilot.history === "") {
+      if (!this.pilot.history && !this.pilot.text_appearance) {
         return `<p> <h2> [ERR: REDACTED] </h2> </p>`
       }
 
       let response = "<p>"
 
-      if (this.pilot.text_appearance !== "") {
+      if (this.pilot.text_appearance) {
         response += `<h2>APPEARANCE</h2> ${this.pilot.text_appearance} </hr>`;
       }
 
-      if (this.pilot.history !== "") {
+      if (this.pilot.history) {
         response += `<h2>HISTORY</h2> ${this.pilot.history} </hr>`;
       }
 
@@ -296,10 +359,11 @@ export default {
     },
     getSkill(skill) {
       let sk = this.skills.find((x) => x.id == skill.id);
-      return sk.name + " +" + (skill.rank * 2)
+      return (sk?.name || skill.data?.name || skill.id || "ERR: DATA NOT FOUND") + " +" + (skill.rank * 2)
     },
     getTalent(id, value) {
       let talent = this.talents.find((x) => x.id == id);
+      const pilotTalent = (this.pilot.talents || []).find((x) => x.id == id);
       if (talent != null) {
         let response = talent.name + " "
 
@@ -308,11 +372,12 @@ export default {
         }
         return response;
       }
-      return "ERR: DATA NOT FOUND"
+      return `${pilotTalent?.data?.name || "ERR: DATA NOT FOUND"} ${"I".repeat(value)}`
     },
     getLicense(id, value) {
       let frame = this.frames.find((x) => x.id == id);
-      let response = frame.source + " " + frame.name + " "
+      const license = (this.pilot.licenses || []).find((x) => x.id == id);
+      let response = frame ? `${frame.source} ${frame.name} ` : `${license?.stub?.source || "UNKNOWN"} ${license?.stub?.name || id} `
 
       for (let i = 0; i < value; i++) {
         response += "I"
@@ -361,14 +426,15 @@ export default {
         width: 1920,
       })
     },
-    mechModal() {
+    mechModal(mech = this.activeMech) {
+      const selectedMech = this.buildMechDisplay(mech)
       this.$oruga.modal.open({
         component: MechModal,
         custom: true,
         trapFocus: true,
         props: {
           animate: this.animate,
-          mech: this.activeMech,
+          mech: selectedMech,
           systemsData: this.mechSystems,
           weaponsData: this.mechWeapons,
           pilot: this.pilot,
